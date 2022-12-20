@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 import User from '../models/user.model';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
+import { sendMail } from '../utils/user.util';
 
 //create new user registration
 export const newUserRegister = async (body) => {
@@ -30,5 +31,20 @@ export const UserLogin = async (body) => {
   }
   else {
     throw new Error('Invalid Email');
+  }
+};
+
+//Forgot password
+export const forgotPassword = async (body) => {
+  // To check email id is register or not in database
+  const data = await User.findOne({ email: body.email });
+  if (data !== null) {
+    // eslint-disable-next-line max-len
+    var passwordToken = jwt.sign({ 'id': data.id, 'firstname': data.firstname, 'email': data.email }, process.env.SECRET_KEY);
+    sendMail(data.email);
+    return passwordToken;
+  }
+  else {
+    throw new Error('Invalid Email ID');
   }
 };
