@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import HttpStatus from 'http-status-codes';
 import * as UserService from '../services/user.service';
 
@@ -14,6 +15,25 @@ export const newUserRegister = async (req, res, next) => {
       code: HttpStatus.CREATED,
       data: data,
       message: 'User Register successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Controller to login a user
+ * @param  {object} req - request object
+ * @param {object} res - response object
+ * @param {Function} next
+ */
+export const UserLogin = async (req, res, next) => {
+  try {
+    const data = await UserService.UserLogin(req.body);
+    res.status(HttpStatus.ACCEPTED).json({
+      code: HttpStatus.ACCEPTED,
+      data: data,
+      message: 'Login done successfully'
     });
   } catch (error) {
     next(error);
