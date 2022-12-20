@@ -21,6 +21,7 @@ export const newUserRegister = async (req, res, next) => {
   }
 };
 
+
 /**
  * Controller to login a user
  * @param  {object} req - request object
