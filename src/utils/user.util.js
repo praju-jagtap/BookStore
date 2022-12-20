@@ -34,8 +34,8 @@ export const sendMail = async (email) => {
         const mailOptions = {
             from: 'PRAJAKTAJAGTAP2412 <prajaktajagtap2412@gmail.com>',
             to: email,
-            subject: 'Hello from gmail using API',
-            text: 'Hello from gmail email using API',
+            subject: 'Reset Password',
+            text: 'Reset Password',
             html: '<h1>To Reset Your Password <a href="http://localhost:3000/api/v1/users/resetpassword"> Click Here </a></h1><h1>',
         };
         const result = await transport.sendMail(mailOptions);

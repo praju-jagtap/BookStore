@@ -48,3 +48,21 @@ export const forgotPassword = async (body) => {
     throw new Error('Invalid Email ID');
   }
 };
+
+
+//reset password
+export const resetPassword = async (body) => {
+  const saltRounds = 10;
+  const hashpassword = await bcrypt.hash(body.password, saltRounds);
+  body.password = hashpassword;
+  const data = await User.findOneAndUpdate(
+    {
+      email: body.email
+    },
+    { password: body.password },
+    {
+      new: true
+    }
+  );
+  return data;
+};
