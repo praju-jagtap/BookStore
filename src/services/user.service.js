@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import User from '../models/user.model';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken'
 
 //create new user registration
 export const newUserRegister = async (body) => {
@@ -13,18 +14,21 @@ export const newUserRegister = async (body) => {
   }
 };
 
-//user-login
+// user login
 export const UserLogin = async (body) => {
   const data = await User.findOne({ email: body.email });
   if (data !== null) {
-    console.log('Password',body.password);
-    const result = await bcrypt.compare(body.password,data.password)
-    if (result){
-      return data;
-    }else {
+    const result = await bcrypt.compare(body.password, data.password);
+    if (result) {
+      // eslint-disable-next-line max-len
+      var token = jwt.sign({ firstname: data.firstname, email: data.email }, process.env.SECRET_KEY);
+      return token;
+    }
+    else {
       throw new Error('Invalid Password');
     }
-  } else {
+  }
+  else {
     throw new Error('Invalid Email');
   }
 };
