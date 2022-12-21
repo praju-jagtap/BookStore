@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import HttpStatus from 'http-status-codes';
 import jwt from 'jsonwebtoken';
 
@@ -18,10 +19,10 @@ export const userAuth = async (req, res, next) => {
         message: 'Authorization token is required'
       };
     bearerToken = bearerToken.split(' ')[1];
-
-    const { user } = await jwt.verify(bearerToken, 'your-secret-key');
-    res.locals.user = user;
-    res.locals.token = bearerToken;
+    const user = await jwt.verify(bearerToken, process.env.SECRET_KEY);
+    req.body.userID = user.email;
+    // res.locals.user = user;
+    //res.locals.token = bearerToken;
     next();
   } catch (error) {
     next(error);

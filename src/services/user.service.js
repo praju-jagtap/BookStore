@@ -4,12 +4,15 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { sendMail } from '../utils/user.util';
 
-//create new user registration
+//create new user Refactore-registration for hash password
 export const newUserRegister = async (body) => {
-  const data = await User.find({ email: body.email });
-  if (data.length !== 0) {
+  const email = await User.findOne({ email: body.email });
+  if (email) {
     throw new Error('Already Exist EmailId');
   } else {
+    const saltRounds = 10;
+    const hashpassword = await bcrypt.hash(body.password, saltRounds)
+    body.password = hashpassword
     const data = await User.create(body);
     return data;
   }
