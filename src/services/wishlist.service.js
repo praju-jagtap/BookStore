@@ -44,3 +44,39 @@ export const addBookIntoWishlist = async (body, _id) => {
         throw new Error('Book is Not Present');
     }
 };
+
+//remove from wishlist
+export const removeBookFromWishlist = async (body, _id) => {
+    const bookWishlistExist = await Wishlist.findOne({ userID: body.userID });
+    console.log('wishlist Exist---->',bookWishlistExist);
+    let bookExist = false;
+    let removeBookDetails;
+
+    if (bookWishlistExist !== null) {
+        await bookWishlistExist.books.forEach(element => {
+            if (element.productId === _id) {
+                removeBookDetails = {
+                    'productId': element.productId,
+                    'description': element.description,
+                    'bookName': element.bookName,
+                    'bookImage': element.bookImage,
+                    'author': element.author,
+                    'price': element.price
+                };
+                bookExist = true;
+            }
+        });
+        if (bookExist === true) {
+            const updateMyWishlist = await Wishlist.findOneAndUpdate(
+                { _id: bookWishlistExist._id },
+                { $pull: { books: removeBookDetails } },
+                { new: true }
+            );
+            return updateMyWishlist;
+        } else {
+            throw new Error('Book is Not Present in Your Wishlist');
+        }
+    } else {
+        throw new Error('Wishlist Does Not Exist');
+    }
+};
