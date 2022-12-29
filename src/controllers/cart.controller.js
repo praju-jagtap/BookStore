@@ -22,3 +22,17 @@ export const addBookIntoCart = async (req, res, next) => {
         next(error);
     }
 };
+
+//remve book one by one from cart
+export const removeBookOneByOne = async (req, res, next) => {
+    try {
+        const data = await CartService.removeBookOneByOne(req.body, req.params._id);
+        res.status(HttpStatus.CREATED).json({
+            code: HttpStatus.CREATED,
+            data: data,
+            message: 'Remove Book One By One From Cart Successfully'
+        });
+    } catch (error) {
+        next(error);
+    }
+};

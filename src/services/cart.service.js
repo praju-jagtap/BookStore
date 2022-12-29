@@ -57,3 +57,38 @@ export const addBookIntoCart = async (body, _id) => {
         throw new Error('Book is Not Present, Please Enter Valid Book Id');
     }
 }
+
+//remove book quantity one by one from cart
+export const removeBookOneByOne = async (body, _id) => {
+    const data = await Cart.findOne({ userID: body.userID });
+    console.log('data--->', data);
+    let bookExist = false;
+
+    if (data !== null) {
+        await data.books.forEach(bookelement => {
+            if (bookelement.productId === _id && bookelement.quantity > 1) {
+                --bookelement.quantity;
+                bookExist = true;
+            }
+            else if (bookelement.productId === _id && bookelement.quantity === 1) {
+                console.log('index', data.books.indexOf(bookelement));
+                data.books.splice(data.books.indexOf(bookelement), 1);
+                bookExist = true;
+            }
+
+        });
+        if (bookExist) {
+            let bookDetail = await Books.findOne({ _id });
+            if (bookDetail !== null) {
+                await Books.findOneAndUpdate({ _id }, bookDetail, { new: true });
+            }
+            let updateMyCart = await Cart.findOneAndUpdate({ userID: body.userID }, { books: data.books }, { new: true })
+            console.log('update my cart--->', updateMyCart);
+            return updateMyCart;
+        } else {
+            throw new Error('Book is Not Added in cart, Please Enter Valid Id')
+        }
+    } else {
+        throw new Error('Cart is Empty');
+    }
+};
