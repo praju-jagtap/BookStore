@@ -92,3 +92,38 @@ export const removeBookOneByOne = async (body, _id) => {
         throw new Error('Cart is Empty');
     }
 };
+
+//remove book from cart
+export const removeBookFromCart = async (body, _id) => {
+    const cartExist = await Cart.findOne({ userID: body.userID });
+    console.log('cart Exist-->',cartExist);
+    let bookExist = false;
+    let removeBook;
+
+    if (cartExist !== null) {
+        await cartExist.books.forEach(bookelement => {
+            if (bookelement.productId === _id) {
+                removeBook = bookelement.quantity;
+                cartExist.books.splice(cartExist.books.indexOf(bookelement), 1);
+                bookExist = true;
+            }
+        });
+        if (bookExist) {
+            let bookData = await Books.findOne({ _id });
+            if (bookData !== null) {
+                bookData.quantity += removeBook;
+                await Books.findOneAndUpdate({ _id }, bookData, { new: true });
+            }
+            const updateCart = await Cart.findOneAndUpdate(
+                { userID: body.userID },
+                { books: cartExist.books},
+                { new: true }
+            );
+            return updateCart;
+        } else {
+            throw new Error('Book is Not Present in Cart')
+        }
+    } else {
+        throw new Error('Cart is Empty')
+    }
+};

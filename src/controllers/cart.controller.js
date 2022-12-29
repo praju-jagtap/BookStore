@@ -36,3 +36,17 @@ export const removeBookOneByOne = async (req, res, next) => {
         next(error);
     }
 };
+
+//remove book from cart
+export const removeBookFromCart = async (req, res, next) => {
+    try {
+        const data = await CartService.removeBookFromCart(req.body, req.params._id);
+        res.status(HttpStatus.CREATED).json({
+            code: HttpStatus.CREATED,
+            data: data,
+            message: 'Remove Book From Cart Successfully'
+        });
+    } catch (error) {
+        next(error);
+    }
+};

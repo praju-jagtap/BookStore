@@ -12,4 +12,7 @@ router.post('/add/:_id',userAuth, cartController.addBookIntoCart);
 //route to remve book one by one from cart
 router.post('/removebookonebyone/:_id',userAuth, cartController.removeBookOneByOne);
 
+//route to remve book from cart
+router.post('/removebook/:_id',userAuth, cartController.removeBookFromCart);
+
 export default router;
